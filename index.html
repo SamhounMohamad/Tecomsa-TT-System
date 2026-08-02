@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My GitHub Web App</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; text-align: center; }
+        .container { max-width: 400px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+        input, button { width: 100%; padding: 10px; margin: 10px 0; box-sizing: border-box; }
+        button { background-color: #28a745; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Submit Data to Google Sheets</h2>
+        <input type="text" id="name" placeholder="Enter Name">
+        <input type="text" id="message" placeholder="Enter Message">
+        <button onclick="sendToGoogle()">Submit to Google</button>
+        <p id="status"></p>
+    </div>
+
+    <script>
+        function sendToGoogle() {
+            // Your exact web app endpoint URL
+            const webAppUrl = "https://script.google.com/macros/s/AKfycbxcdMiZU19rRQGdgxDnNini6ja3Z5R05-VAcz7d3MVRc-DzXFsAoFYw1hXmIWGXf3_I/exec";
+            const statusEl = document.getElementById("status");
+            
+            const payload = {
+                name: document.getElementById("name").value,
+                message: document.getElementById("message").value
+            };
+
+            statusEl.innerText = "Sending...";
+
+            // Sending data to your Google Script backend via fetch
+            fetch(webAppUrl, {
+                method: "POST",
+                mode: "no-cors", // Required to bypass cross-origin browser security barriers
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                statusEl.innerText = "Data sent successfully!";
+                statusEl.style.color = "green";
+            })
+            .catch(error => {
+                statusEl.innerText = "Error sending data.";
+                statusEl.style.color = "red";
+                console.error("Error:", error);
+            });
+        }
+    </script>
+
+</body>
+</html>
