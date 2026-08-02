@@ -2,16 +2,61 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- This tag immediately forwards the user to your Google Script URL -->
-    <meta http-equiv="refresh" content="0; url=https://google.com">
-    <link rel="canonical" href="https://google.com">
-    <title>Redirecting...</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tecomsa TT System</title>
     <style>
-        body { font-family: sans-serif; text-align: center; margin-top: 50px; background-color: #121212; color: #fff; }
-        a { color: #3498db; text-decoration: none; }
+        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #121212; color: white; }
+        .form-card { background: #1e1e1e; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); width: 100%; max-width: 400px; text-align: center; border: 1px solid #333; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 6px; border: 1px solid #444; background: #2a2a2a; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        button:hover { background-color: #0056b3; }
+        #status { margin-top: 15px; font-size: 14px; }
     </style>
 </head>
 <body>
-    <p>Redirecting you to the system... If you are not redirected automatically, <a href="https://google.com">click here</a>.</p>
+
+    <div class="form-card">
+        <h2>Tecomsa TT System</h2>
+        <p>Submit data to your Google Sheet</p>
+        <input type="text" id="inputData" placeholder="Enter information here...">
+        <button onclick="submitData()">Send to Google Sheets</button>
+        <div id="status"></div>
+    </div>
+
+    <script>
+        function submitData() {
+            // Your exact deployment URL built right into the frontend
+            const targetUrl = "https://script.google.com/macros/s/AKfycbxcdMiZU19rRQGdgxDnNini6ja3Z5R05-VAcz7d3MVRc-DzXFsAoFYw1hXmIWGXf3_I/exec";
+            const statusBox = document.getElementById("status");
+            const inputValue = document.getElementById("inputData").value;
+
+            if(!inputValue) {
+                statusBox.innerText = "Please enter some data first.";
+                statusBox.style.color = "#ff4d4d";
+                return;
+            }
+
+            statusBox.innerText = "Processing submission...";
+            statusBox.style.color = "#aaa";
+
+            fetch(targetUrl, {
+                method: "POST",
+                mode: "no-cors", // Crucial flag to bypass typical browser cross-origin limits
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ data: inputValue })
+            })
+            .then(() => {
+                statusBox.innerText = "Success! Data routed to Google Sheets.";
+                statusBox.style.color = "#2ecc71";
+                document.getElementById("inputData").value = "";
+            })
+            .catch(err => {
+                statusBox.innerText = "Submission failed. Check network connections.";
+                statusBox.style.color = "#e74c3c";
+                console.error("Error:", err);
+            });
+        }
+    </script>
+
 </body>
 </html>
